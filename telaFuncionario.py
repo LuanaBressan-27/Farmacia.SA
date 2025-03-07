@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from Crud_Funcionarios import create_user,read_users,update_user,delete_user
+from Crud_Funcionario import create_user,read_users,update_user,delete_user
 
 class CRUDApp:
     def __init__(self,root):
@@ -12,7 +12,7 @@ class CRUDApp:
 
     def create_widgets(self):
         #Labels
-        tk.Label(self.root,text="Nome:").grid(row=0,column=0)    #fornecedor,email,produtos,quantidade,transporte,cidade,estado
+        tk.Label(self.root,text="Nome:").grid(row=0,column=0)    
         tk.Label(self.root,text="Email:").grid(row=1,column=0) 
         tk.Label(self.root,text="Data_de_nascimento:").grid(row=2,column=0) 
         tk.Label(self.root,text="Ddata de contrato:").grid(row=3,column=0) 
@@ -46,10 +46,10 @@ class CRUDApp:
         self.user_id_entry.grid(row=8,column=1)
 
     #BOTOES DO CRUD
-        tk.Button(self.root,text="Criar Funcionario",command=self.create_user).grid(row=8,column=0,columnspan=1)
-        tk.Button(self.root,text="Listar Funcionario",command=self.create_user).grid(row=8,column=1,columnspan=1)
-        tk.Button(self.root,text="Alterar Funcionario",command=self.create_user).grid(row=9,column=0,columnspan=1)
-        tk.Button(self.root,text="Excluir Funcionario",command=self.create_user).grid(row=9,column=1,columnspan=1)
+        tk.Button(self.root,text="Criar Registro",command=self.create_user).grid(row=8,column=0,columnspan=1)
+        tk.Button(self.root,text="Listar Registro",command=self.create_user).grid(row=8,column=1,columnspan=1)
+        tk.Button(self.root,text="Alterar Registro",command=self.create_user).grid(row=9,column=0,columnspan=1)
+        tk.Button(self.root,text="Excluir Registro",command=self.create_user).grid(row=9,column=1,columnspan=1)
 
     def create_user(self):
         nome = self.nome_entry.get()

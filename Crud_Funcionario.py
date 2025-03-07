@@ -9,7 +9,7 @@ def get_connection():
         database = MYSQL_DATABASE 
     )
            
-def create_funcionario(nome,email,data_de_nascimento,data_de_contrato,telefone,cidade,estado,bairro):
+def create_user(nome,email,data_de_nascimento,data_de_contrato,telefone,cidade,estado,bairro):
     conn =get_connection()
     cursor = conn.cursor()
     query = "insert user (nome,email,data_de_nascimento,data_de_contrato,telefone,cidade,estado,bairro) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
