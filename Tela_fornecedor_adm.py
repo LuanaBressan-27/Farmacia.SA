@@ -1,79 +1,106 @@
 import tkinter as tk
 from tkinter import messagebox
-from crud_stuff_fornecedores import add_supplier,read_suppliers,update_supplier,delete_supplier
-class CRUDApp:
-    def __init__(self,root):
-        self.root=root
-        self.root.title("FORNECEDORES")
-        #criação de widgets
+from crud_stuff_fornecedores import add_supplier, read_suppliers, update_supplier, delete_supplier
+
+class TelaFornecedor:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Gerenciamento de Fornecedores")
         self.create_widgets()
+
     def create_widgets(self):
-        #Labels
-        tk.Label(self.root,text="Nome:").grid(row=0,column=0)
-        tk.Label(self.root,text="Produto Fornecido:").grid(row=1,column=0)
-        tk.Label(self.root,text="Quantia Mensal:").grid(row=2,column=0)
-        tk.Label(self.root,text="Usuario:").grid(row=3,column=0)
-        tk.Label(self.root,text="Id Fornecedor (for update/delete):").grid(row=6,column=0)
-        #criar as caixas para digitar os valores
-        self.nome_entry=tk.Entry(self.root)
-        self.produto_fornecido_entry=tk.Entry(self.root)
-        self.quantia_mensal_entry=tk.Entry(self.root)
-        self.usuario_entry=tk.Entry(self.root)
-        self.idfornecedor_entry=tk.Entry(self.root)
-        self.nome_entry.grid(row=0,column=1)
-        self.produto_fornecido_entry.grid(row=1,column=1)
-        self.quantia_mensal_entry.grid(row=2,column=1)
-        self.usuario_entry.grid(row=3,column=1)
-        self.idfornecedor_entry.grid(row=4,column=1)
-        #botões do crud
-        tk.Button(self.root,text="Adicionar fornecedor",command=self.add_supplier).grid(row=6,column=0,columnspan=1)
-        tk.Button(self.root,text="Listar fornecedores",command=self.read_suppliers).grid(row=6,column=1,columnspan=1)
-        tk.Button(self.root,text="Alterar fornecedores",command=self.update_supplier).grid(row=7,column=0,columnspan=1)
-        tk.Button(self.root,text="Excluir fornecedores",command=self.delete_supplier).grid(row=7,column=1,columnspan=1)
-        self.text_area=tk.Text(self.root,height=10,width=80)
-        self.text_area.grid(row=1,column=0,columnspan=4)
+        # Configuração de layout
+        input_frame = tk.Frame(self.root)
+        input_frame.grid(row=0, column=0, padx=10, pady=10)
+
+        button_frame = tk.Frame(self.root)
+        button_frame.grid(row=1, column=0, padx=10, pady=10)
+
+        text_frame = tk.Frame(self.root)
+        text_frame.grid(row=2, column=0, padx=10, pady=10)
+
+        # Labels e campos de entrada
+        labels = ["Nome", "Email", "Produto", "Transporte", "Início do Contrato",
+                  "Final do Contrato", "Cidade", "Estado", "ID Fornecedor (para Atualizar/Excluir)"]
+        self.entries = {}
+        for i, label in enumerate(labels):
+            tk.Label(input_frame, text=f"{label}:").grid(row=i, column=0, sticky="e", pady=5)
+            entry = tk.Entry(input_frame)
+            entry.grid(row=i, column=1, padx=5, pady=5)
+            self.entries[label.lower().replace(" ", "_")] = entry
+
+        # Botões
+        tk.Button(button_frame, text="Adicionar Fornecedor", command=self.add_supplier).grid(row=0, column=0, padx=5)
+        tk.Button(button_frame, text="Atualizar Fornecedor", command=self.update_supplier).grid(row=0, column=1, padx=5)
+        tk.Button(button_frame, text="Excluir Fornecedor", command=self.delete_supplier).grid(row=0, column=2, padx=5)
+        tk.Button(button_frame, text="Listar Fornecedores", command=self.list_suppliers).grid(row=0, column=3, padx=5)
+
+        # Área de texto para exibir fornecedores
+        self.text_area = tk.Text(text_frame, height=10, width=80)
+        self.text_area.pack()
+
     def add_supplier(self):
-        nome=self.nome_entry.get()
-        produtofornecido=self.produto_fornecido_entry.get()
-        quantiamensal=self.quantia_mensal_entry.get()
-        usuario=self.usuario_entry.get()
-        if nome and produtofornecido and quantiamensal and usuario:
-            add_supplier(nome,produtofornecido,quantiamensal,usuario)
-            self.nome_entry.delete(0,tk.END)
-            self.produto_fornecido_entry.delete(0,tk.END)
-            self.quantia_mensal_entry.delete(0,tk.END)
-            self.usuario_entry.delete(0,tk.END)
-            messagebox.showinfo("Successo","Fornecedor adicionado com sucesso")
+        values = {key: entry.get().strip() for key, entry in self.entries.items() if key != "id_fornecedor"}
+        if all(values.values()):
+            try:
+                add_supplier(
+                    values["nome"], values["email"], values["produto"], values["transporte"],
+                    values["início_do_contrato"], values["final_do_contrato"], values["cidade"], values["estado"]
+                )
+                self.clear_entries()
+                messagebox.showinfo("Sucesso", "Fornecedor adicionado com sucesso!")
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao adicionar fornecedor: {e}")
         else:
-            messagebox.showerror("Error","Todos os campos são obrigatórios")
-    def read_suppliers(self):
-        suppliers=read_suppliers()
-        self.text_area.delete(1.0,tk.END)
-        for supplier in suppliers:
-            self.text_area.insert(tk.END,f"id: {supplier[0]}, nome: {supplier[1]}, produto_fornecido: {supplier[2]}, quantia_mensal: {supplier[3]}, usuario: {supplier[4]}\n")
+            messagebox.showerror("Erro", "Todos os campos são obrigatórios para adicionar um fornecedor.")
+
     def update_supplier(self):
-        idproduto=self.idfornecedor_entry.get()
-        nome=self.nome_entry.get()
-        estoque=self.produto_fornecido_entry.get()
-        valor=self.quantia_mensal_entry.get()
-        if idproduto and nome and estoque and valor:
-            update_supplier(idproduto,nome,estoque,valor)
-            self.nome_entry.delete(0,tk.END)
-            self.produto_fornecido_entry.delete(0,tk.END)
-            self.quantia_mensal_entry.delete(0,tk.END)
-            self.idfornecedor_entry.delete(0,tk.END)
-            messagebox.showinfo("Successo","Fornecedor alterado com sucesso")
+        id_fornecedor = self.entries["id_fornecedor"].get().strip()
+        values = {key: entry.get().strip() for key, entry in self.entries.items()}
+        if id_fornecedor and all(values.values()):
+            try:
+                update_supplier(
+                    id_fornecedor, values["nome"], values["email"], values["produto"], values["transporte"],
+                    values["início_do_contrato"], values["final_do_contrato"], values["cidade"], values["estado"]
+                )
+                self.clear_entries()
+                messagebox.showinfo("Sucesso", "Fornecedor atualizado com sucesso!")
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao atualizar fornecedor: {e}")
         else:
-            messagebox.showerror("Error","Todos os campos são obrigatórios")
+            messagebox.showerror("Erro", "Todos os campos são obrigatórios para atualizar um fornecedor.")
+
     def delete_supplier(self):
-        supplier_id=self.idfornecedor_entry.get()
-        if supplier_id:
-            delete_supplier(supplier_id)
-            self.idfornecedor_entry.delete(0,tk.END)
-            messagebox.showinfo("Success","Fornecedor excluido com sucesso")
+        id_fornecedor = self.entries["id_fornecedor"].get().strip()
+        if id_fornecedor:
+            try:
+                delete_supplier(id_fornecedor)
+                self.clear_entries()
+                messagebox.showinfo("Sucesso", "Fornecedor excluído com sucesso!")
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao excluir fornecedor: {e}")
         else:
-            messagebox.showerror("Error","ID do fornecedor é obrigatório")
-if __name__=="__main__":
-    root=tk.Tk()
-    app=CRUDApp(root)
+            messagebox.showerror("Erro", "ID do fornecedor é obrigatório para excluir.")
+
+    def list_suppliers(self):
+        try:
+            suppliers = read_suppliers()
+            self.text_area.delete(1.0, tk.END)
+            for supplier in suppliers:
+                self.text_area.insert(
+                    tk.END,
+                    f"ID: {supplier[0]}, Nome: {supplier[1]}, Email: {supplier[2]}, Produto: {supplier[3]}, "
+                    f"Transporte: {supplier[4]}, Início do Contrato: {supplier[5]}, Final do Contrato: {supplier[6]}, "
+                    f"Cidade: {supplier[7]}, Estado: {supplier[8]}\n"
+                )
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao listar fornecedores: {e}")
+
+    def clear_entries(self):
+        for entry in self.entries.values():
+            entry.delete(0, tk.END)
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = TelaFornecedor(root)
     root.mainloop()
