@@ -1,5 +1,4 @@
 import mysql.connector
-
 # Configurações do banco de dados
 MYSQL_HOST = 'localhost'
 MYSQL_USER = 'root'
@@ -8,6 +7,11 @@ MYSQL_DATABASE = 'farmacia_sa'
 
 def get_connection():
     """Estabelece conexão com o banco de dados"""
+MYSQL_HOST='localhost'
+MYSQL_USER='root'
+MYSQL_PASSWORD=''
+MYSQL_DATABASE='farmacia_sa'
+def get_connection():
     return mysql.connector.connect(
         host=MYSQL_HOST,
         user=MYSQL_USER,
@@ -16,14 +20,17 @@ def get_connection():
     )
 
 # Adicionar fornecedor
-def add_supplier(nome, email, produto, transporte, cidade, estado):
+def add_supplier(nome, email, produto, inicio_contrato, final_contrato, transporte, cidade, estado):
     conn = get_connection()
     cursor = conn.cursor()
     try:
-        query = """INSERT INTO fornecedor (nome, email, produto, transporte, cidade, estado)
-                   VALUES (%s, %s, %s, %s, %s, %s)"""
-        cursor.execute(query, (nome, email, produto, transporte, cidade, estado))
+        query = """INSERT INTO fornecedor (nome, email, produto, inicio_contrato, final_contrato, transporte, cidade, estado)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+        cursor.execute(query, (nome, email, produto, inicio_contrato, final_contrato, transporte, cidade, estado))
         conn.commit()
+        print("Fornecedor adicionado com sucesso!")
+    except Exception as e:
+        print(f"Erro ao adicionar fornecedor: {e}")
     finally:
         cursor.close()
         conn.close()
@@ -35,34 +42,107 @@ def read_suppliers():
     try:
         query = "SELECT * FROM fornecedor"
         cursor.execute(query)
-        return cursor.fetchall()
+        result = cursor.fetchall()
+        return result
+    except Exception as e:
+        print(f"Erro ao listar fornecedores: {e}")
     finally:
         cursor.close()
         conn.close()
 
 # Atualizar fornecedor
-def update_supplier(id_fornecedor, nome, email, produto, transporte, cidade, estado):
+def update_supplier(idfornecedor, nome, email, produto, inicio_contrato, final_contrato, transporte, cidade, estado):
     conn = get_connection()
     cursor = conn.cursor()
     try:
-        query = """UPDATE fornecedor
-                   SET nome = %s, email = %s, produto = %s,
-                       transporte = %s, cidade = %s, estado = %s
-                   WHERE idfornecedor = %s"""
-        cursor.execute(query, (nome, email, produto, transporte, cidade, estado, id_fornecedor))
+        query = """UPDATE fornecedor SET nome = %s, email = %s, produto = %s, 
+                   inicio_contrato = %s, final_contrato = %s, transporte = %s, cidade = %s, estado = %s WHERE idfornecedor = %s"""
+        cursor.execute(query, (nome, email, produto, inicio_contrato, final_contrato, transporte, cidade, estado, idfornecedor))
         conn.commit()
+        print("Fornecedor atualizado com sucesso!")
+    except Exception as e:
+        print(f"Erro ao atualizar fornecedor: {e}")
     finally:
         cursor.close()
         conn.close()
 
 # Deletar fornecedor
-def delete_supplier(id_fornecedor):
+def delete_supplier(idfornecedor):
     conn = get_connection()
     cursor = conn.cursor()
     try:
         query = "DELETE FROM fornecedor WHERE idfornecedor = %s"
-        cursor.execute(query, (id_fornecedor,))
+        cursor.execute(query, (idfornecedor,))
         conn.commit()
+        print("Fornecedor deletado com sucesso!")
+    except Exception as e:
+        print(f"Erro ao deletar fornecedor: {e}")
     finally:
         cursor.close()
         conn.close()
+
+# Listar todos os fornecedores com menos detalhes
+def listar_todos_os_fornecedores():
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        query = "SELECT idfornecedor, nome, email, cidade, estado FROM fornecedor"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        for fornecedor in result:
+            print(f"ID: {fornecedor[0]}, Nome: {fornecedor[1]}, Email: {fornecedor[2]}, Cidade: {fornecedor[3]}, Estado: {fornecedor[4]}")
+    except Exception as e:
+        print(f"Erro ao listar todos os fornecedores: {e}")
+    finally:
+        cursor.close()
+        conn.close()
+
+# Buscar fornecedor por nome
+def buscar_fornecedor_por_nome(nome):
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        query = "SELECT * FROM fornecedor WHERE nome LIKE %s"
+        cursor.execute(query, (f"%{nome}%",))
+        result = cursor.fetchall()
+        for fornecedor in result:
+            print(f"ID: {fornecedor[0]}, Nome: {fornecedor[1]}, Email: {fornecedor[2]}, Produto: {fornecedor[3]}, Início do Contrato: {fornecedor[4]}, "
+                  f"Final do Contrato: {fornecedor[5]}, Transporte: {fornecedor[6]}, Cidade: {fornecedor[7]}, Estado: {fornecedor[8]}")
+    except Exception as e:
+        print(f"Erro ao buscar fornecedor por nome: {e}")
+    finally:
+        cursor.close()
+        conn.close()
+def add_supplier(nome,produto_fornecido,quantia_mensal,usuario):
+    conn=get_connection()
+    cursor=conn.cursor()
+    query="insert fornecedores(nome,produto_fornecio,quantia_mensal,usuario)VALUES(%s,%s,%i,%s)"
+    cursor.execute(query,(nome,produto_fornecido,quantia_mensal,usuario))
+    conn.commit()
+    cursor.close()
+    conn.close()
+def read_suppliers():
+    conn=get_connection()
+    cursor=conn.cursor()
+    query="SELECT * FROM fornecedores"
+    cursor.execute(query) 
+    result=cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
+def update_supplier(nome,produto_fornecido,quantia_mensal):
+    conn=get_connection()
+    cursor=conn.cursor()
+    query="UPDATE produtos SET nome=%s,produto_fornecido=%s,quantia_mensal=%i WHERE idfornecedor=%s"
+    cursor.execute(query,(nome,produto_fornecido,quantia_mensal))
+    conn.commit()
+    cursor.close()
+    conn.close()
+def delete_supplier(supplier_id):
+    conn=get_connection()
+    cursor=conn.cursor()
+    query="DELETE FROM fornecedores WHERE idfornecedor=%s"
+    cursor.execute(query,(supplier_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
