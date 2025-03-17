@@ -29,7 +29,7 @@ class TelaFornecedor:
             tk.Label(input_frame, text=f"{label}:").grid(row=i, column=0, sticky="e", pady=5)
             entry = tk.Entry(input_frame)
             entry.grid(row=i, column=1, pady=5, padx=5)
-            self.entries[label.lower()] = entry
+            self.entries[label.lower().replace(" ", "_")] = entry
 
         # Botões para operações
         tk.Button(button_frame, text="Adicionar Fornecedor", command=self.add_supplier).grid(row=0, column=0, padx=5)
@@ -44,12 +44,12 @@ class TelaFornecedor:
         fields = {key: entry.get().strip() for key, entry in self.entries.items()}
         
         # Verifica se todos os campos estão preenchidos
-        if all(fields.values()):  # Certifica-se de que todos os campos foram preenchidos
+        if all(fields.values()):
             try:
                 # Chama a função para adicionar o fornecedor
                 add_supplier(
-                    fields["nome"], fields["email"], fields["produto fornecido"],
-                    fields["tipo de transporte"], fields["cidade"], fields["estado"]
+                    fields["nome"], fields["email"], fields["produto_fornecido"],
+                    fields["tipo_de_transporte"], fields["cidade"], fields["estado"]
                 )
                 messagebox.showinfo("Sucesso", "Fornecedor adicionado com sucesso!")
                 self.clear_entries()
@@ -66,11 +66,10 @@ class TelaFornecedor:
             if suppliers:
                 # Exibe todos os dados, incluindo "Cidade" e "Estado"
                 for supplier in suppliers:
-                    # Certifique-se de que os dados da cidade e do estado são exibidos corretamente
                     self.text_area.insert(
                         tk.END,
                         f"ID: {supplier[0]}, Nome: {supplier[1]}, Email: {supplier[2]}, "
-                        f"Produto: {supplier[3]}, Transporte: {supplier[4]}, Cidade: {supplier[5] or supplier[5]}, Estado: {supplier[6] or supplier[5]}\n"
+                        f"Produto: {supplier[3]}, Transporte: {supplier[4]}, Cidade: {supplier[5]}, Estado: {supplier[6]}\n"
                     )
             else:
                 self.text_area.insert(tk.END, "Nenhum fornecedor encontrado.\n")
