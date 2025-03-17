@@ -21,12 +21,13 @@ class TelaFornecedor:
 
         # Labels e campos de entrada
         labels = ["Nome", "Email", "Produto", "Transporte", "Início do Contrato",
-                  "Final do Contrato", "Cidade", "Estado", "ID Fornecedor (para Atualizar/Excluir)"]
+                  "Final do Contrato", "Cidade", "Estado", "ID Fornecedor"]
         self.entries = {}
         for i, label in enumerate(labels):
             tk.Label(input_frame, text=f"{label}:").grid(row=i, column=0, sticky="e", pady=5)
             entry = tk.Entry(input_frame)
             entry.grid(row=i, column=1, padx=5, pady=5)
+            # Correção do nome da chave
             self.entries[label.lower().replace(" ", "_")] = entry
 
         # Botões
@@ -55,8 +56,8 @@ class TelaFornecedor:
             messagebox.showerror("Erro", "Todos os campos são obrigatórios para adicionar um fornecedor.")
 
     def update_supplier(self):
-        id_fornecedor = self.entries["id_fornecedor"].get().strip()
-        values = {key: entry.get().strip() for key, entry in self.entries.items()}
+        id_fornecedor = self.entries["id_fornecedor"].get().strip()  # Chave corrigida
+        values = {key: entry.get().strip() for key, entry in self.entries.items() if key != "id_fornecedor"}
         if id_fornecedor and all(values.values()):
             try:
                 update_supplier(
@@ -71,7 +72,7 @@ class TelaFornecedor:
             messagebox.showerror("Erro", "Todos os campos são obrigatórios para atualizar um fornecedor.")
 
     def delete_supplier(self):
-        id_fornecedor = self.entries["id_fornecedor"].get().strip()
+        id_fornecedor = self.entries["id_fornecedor"].get().strip()  # Chave corrigida
         if id_fornecedor:
             try:
                 delete_supplier(id_fornecedor)
