@@ -1,12 +1,12 @@
 from tkinter import *
 from tkinter import ttk
-from DataBase import Database  # Certifique-se de que este módulo está correto
+from DataBase_adm import Database  # Certifique-se de que este módulo está correto
 from tkinter import messagebox
 
 
 # Tela de login
 jan = Tk()
-jan.title("Login de Usuários")
+jan.title("Login de ADM:")
 jan.geometry("600x300")
 jan.configure(background="purple")
 jan.resizable(width=False, height=False)
@@ -15,10 +15,10 @@ Titulo = Label(jan, text="Login:", font=("Century Gothic", 25), bg="red", fg="Wh
 Titulo.place(x=1, y=50)
 
 # Adicionar campos de usuário e senha
-usuarioLabel = Label(jan, text="Usuário: ", font=("Century Gothic", 10), bg="ORANGE", fg="White")
-usuarioLabel.place(x=1, y=125)
-usuarioEntry = ttk.Entry(jan, width=30)
-usuarioEntry.place(x=60, y=125)
+NomeLabel = Label(jan, text="Nome: ", font=("Century Gothic", 10), bg="ORANGE", fg="White")
+NomeLabel.place(x=1, y=125)
+NomeEntry = ttk.Entry(jan, width=30)
+NomeEntry.place(x=60, y=125)
 
 senhaLabel = Label(jan, text="Senha: ", font=("Century Gothic", 10), bg="ORANGE", fg="White")
 senhaLabel.place(x=1, y=155)
@@ -28,7 +28,7 @@ senhaEntry.place(x=55, y=155)
 
 # Função de login
 def Login():
-    usuario = usuarioEntry.get()
+    usuario = NomeEntry.get()
     senha = senhaEntry.get()
 
     # Conectar ao banco de dados
@@ -38,7 +38,7 @@ def Login():
         cursor = conn.cursor()
 
         # Consulta para verificar as credenciais
-        cursor.execute("SELECT * FROM usuario WHERE usuario = %s AND senha = %s", (usuario, senha))
+        cursor.execute("SELECT * FROM adm WHERE nome = %s AND senha = %s", (usuario, senha))
         VerifiyLogin = cursor.fetchone()
 
         if VerifiyLogin:
@@ -64,10 +64,10 @@ def registrar():
     RegisterButton.place_forget()
 
     # Inserir widgets de cadastro
-    NomeLabel = Label(jan, text="Nome:", font=("Century Gothic", 10), bg="orange", fg="White")
-    NomeLabel.place(x=250, y=125)
-    NomeEntry = ttk.Entry(jan, width=30)
-    NomeEntry.place(x=305, y=125)
+    CPFLabel = Label(jan, text="CPF:", font=("Century Gothic", 10), bg="orange", fg="White")
+    CPFLabel.place(x=250, y=125)
+    CPFEntry = ttk.Entry(jan, width=30)
+    CPFEntry.place(x=305, y=125)
 
     EmailLabel = Label(jan, text="Email:", font=("Century Gothic", 10), bg="orange", fg="White")
     EmailLabel.place(x=250, y=155)
@@ -78,10 +78,10 @@ def registrar():
     def RegistrarNoBanco():
         nome = NomeEntry.get()
         email = EmailEntry.get()
-        usuario = usuarioEntry.get()
+        CPF = CPFEntry.get()
         senha = senhaEntry.get()
 
-        if nome == "" or email == "" or usuario == "" or senha == "":
+        if nome == "" or email == "" or CPF == "" or senha == "":
             messagebox.showerror(title="Erro de Registro", message="Preencha todos os campos!")
         else:
             try:
@@ -90,21 +90,21 @@ def registrar():
                 cursor = conn.cursor()
 
                 # Verificar se o usuário já existe
-                cursor.execute("SELECT * FROM usuario WHERE usuario = %s", (usuario,))
+                cursor.execute("SELECT * FROM adm WHERE nome = %s", (nome,))
                 VerifiyLogin = cursor.fetchone()
                 if VerifiyLogin:
-                    messagebox.showerror(title="Erro de Registro", message="Usuário já cadastrado!")
+                    messagebox.showerror(title="Erro de Registro", message="ADM já cadastrado!")
                 else:
                     # Inserir novo usuário
-                    cursor.execute("INSERT INTO usuario (nome, email, usuario, senha) VALUES (%s, %s, %s, %s)",
-                                   (nome, email, usuario, senha))
+                    cursor.execute("INSERT INTO adm (nome, email, CPF, senha) VALUES (%s, %s, %s, %s)",
+                                   (nome, email, CPF, senha))
                     conn.commit()
-                    messagebox.showinfo(title="Registro", message="Usuário registrado com sucesso!")
+                    messagebox.showinfo(title="Registro", message="ADM registrado com sucesso!")
 
                     # Limpar campos após o registro
                     NomeEntry.delete(0, END)
                     EmailEntry.delete(0, END)
-                    usuarioEntry.delete(0, END)
+                    CPFEntry.delete(0, END)
                     senhaEntry.delete(0, END)
 
             except Exception as e:
@@ -121,8 +121,8 @@ def registrar():
 
     # Função para voltar à tela de login
     def VoltarLogin():
-        NomeLabel.place_forget()
-        NomeEntry.place_forget()
+        CPFLabel.place_forget()
+        CPFEntry.place_forget()
         EmailLabel.place_forget()
         EmailEntry.place_forget()
         Register.place_forget()

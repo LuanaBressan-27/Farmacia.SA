@@ -1,9 +1,9 @@
--- phpMyAdmin SQL Dump
+-- phpMyAdmin SQL Dumpk,m
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 06/03/2025 às 01:11
+-- Tempo de geração: 13/03/2025 às 23:43
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Banco de dados: `farmacia.sa`
+-- Banco de dados: `farmacia_sa`
 --
 
 -- --------------------------------------------------------
@@ -43,11 +43,12 @@ CREATE TABLE `adm` (
 
 CREATE TABLE `fornecedor` (
   `idfornecedor` int(11) NOT NULL,
-  `fornecedor` text DEFAULT NULL,
+  `nome` text DEFAULT NULL,
   `email` text DEFAULT NULL,
-  `produtos` text DEFAULT NULL,
-  `quantidade` int(11) DEFAULT NULL,
+  `produto` text DEFAULT NULL,
   `transporte` text DEFAULT NULL,
+  `inicio_contrato` text DEFAULT NULL,
+  `final_contrato` text DEFAULT NULL,
   `cidade` text DEFAULT NULL,
   `estado` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -62,9 +63,12 @@ CREATE TABLE `funcionario` (
   `idfuncionario` int(11) NOT NULL,
   `nome` text DEFAULT NULL,
   `email` text DEFAULT NULL,
+  `data_de_nascimento` text DEFAULT NULL,
+  `data_de_contrato` text DEFAULT NULL,
   `telefone` text DEFAULT NULL,
   `cidade` text DEFAULT NULL,
-  `estado` text DEFAULT NULL
+  `estado` text DEFAULT NULL,
+  `bairro` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -76,9 +80,11 @@ CREATE TABLE `funcionario` (
 CREATE TABLE `produto` (
   `idproduto` int(11) NOT NULL,
   `produto` text DEFAULT NULL,
-  `Fornecedor` text DEFAULT NULL,
-  `código` int(11) DEFAULT NULL,
-  `quantidade` int(11) DEFAULT NULL
+  `valor` text DEFAULT NULL,
+  `fornecedor` text DEFAULT NULL,
+  `descricao` text DEFAULT NULL,
+  `validade` text DEFAULT NULL,
+  `quantidade` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -91,10 +97,8 @@ CREATE TABLE `usuario` (
   `idusuario` int(11) NOT NULL,
   `nome` text DEFAULT NULL,
   `email` text DEFAULT NULL,
-  `senha` text DEFAULT NULL,
-  `CPF` text DEFAULT NULL,
-  `cidade` text DEFAULT NULL,
-  `estado` text DEFAULT NULL
+  `usuario` text DEFAULT NULL,
+  `senha` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

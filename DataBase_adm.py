@@ -38,13 +38,13 @@ class Database:
             cursor.execute(f"CREATE DATABASE IF NOT EXISTS {self.MYSQL_DATABASE}")
             connection.database = self.MYSQL_DATABASE
 
-            # Criar a tabela "usuario", se não existir
+            # Criar a tabela "adm", se não existir
             cursor.execute("""
-                CREATE TABLE IF NOT EXISTS usuario (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
+                CREATE TABLE IF NOT EXISTS adm (
+                    idADM INT AUTO_INCREMENT PRIMARY KEY,
                     nome VARCHAR(100) NOT NULL,
                     email VARCHAR(100) NOT NULL,
-                    usuario VARCHAR(50) UNIQUE NOT NULL,
+                    CPF VARCHAR(50) UNIQUE NOT NULL,
                     senha VARCHAR(50) NOT NULL
                 )
             """)
